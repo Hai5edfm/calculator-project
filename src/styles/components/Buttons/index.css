@@ -1,0 +1,25 @@
+
+.buttonsList {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, 60px);
+}
+
+.operationBtn, .numberBtn {
+  border: none;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+}
+.numberBtn {
+  background-color: #dadada;
+}
+.numberBtn:hover {
+  background-color: #acacac;
+}
+.operationBtn {
+  background-color: rgba(144, 206, 20, 0.904);
+}
+.operationBtn:hover {
+  background-color: rgb(125, 167, 41);
+}
