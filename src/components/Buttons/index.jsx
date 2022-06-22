@@ -20,9 +20,6 @@ export const NumberPad = () => {
         <button className={"operationBtn"} children={'AC'}/>
       </li>
       <li>
-        <button className={"operationBtn"} children={'^2'}/>
-      </li>
-      <li>
         <button className={"numberBtn"} children={'7'}/>
       </li>
       <li>
@@ -35,7 +32,7 @@ export const NumberPad = () => {
         <button className={"operationBtn"} children={'+'}/>
       </li>
       <li>
-        <button className={"operationBtn"} children={'x^y'}/>
+        <button className={"operationBtn"} children={'^2'}/>
       </li>
       <li>
         <button className={"numberBtn"} children={'4'}/>
@@ -65,15 +62,18 @@ export const NumberPad = () => {
         <button className={"operationBtn"} children={'-'}/>
       </li>
       <li>
+        <button className={"operationBtn"} children={'x!'}/>
+      </li>
+      <li>
         <button className={"operationBtn"} children={'Ans'}/>
       </li>
       <li>
-        <button className={"operationBtn"} children={'x!'}/>
+        <button className={"numberBtn"} children={'0'}/>
       </li>
       <li>
         <button className={"operationBtn"} children={'.'}/>
       </li>
-      <li>
+      <li className="equalBtn">
         <button className={"operationBtn"} children={'='}/>
       </li>
     </ul>

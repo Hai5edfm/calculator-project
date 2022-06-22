@@ -1,15 +1,19 @@
 
 .buttonsList {
   list-style: none;
+  padding: 0;
   display: grid;
   grid-template-columns: repeat(5, 60px);
+  border: 0.4px solid #acacac;
+  width: fit-content;
 }
 
 .operationBtn, .numberBtn {
-  border: none;
+  border: 0.2px solid rgba(241, 241, 241, 0.74);
   width: 60px;
   height: 60px;
   cursor: pointer;
+  border-radius: 4px;
 }
 .numberBtn {
   background-color: #dadada;
@@ -18,8 +22,16 @@
   background-color: #acacac;
 }
 .operationBtn {
-  background-color: rgba(144, 206, 20, 0.904);
+  background-color: rgba(223, 117, 30, 0.904);
 }
 .operationBtn:hover {
-  background-color: rgb(125, 167, 41);
+  background-color: rgba(202, 100, 16, 0.904);
 }
+
+.equalBtn {
+  grid-column: 4 / 6;
+}
+.equalBtn button {
+  width: 100%;
+}
+
