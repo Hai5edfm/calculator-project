@@ -4,24 +4,25 @@ import '../../styles/containers/Calculator/index.css';
 
 export const Calculator = () => {
   const [result, setResult] = React.useState(0);
+  const [numberEditing, setNumberEditing] = React.useState('n1');
+  const [operation, setOperation] = React.useState(null);
   const [{n1, n2}, setNumbers] = React.useState({n1: null, n2: null});
+  const [isDecimal, setIsDecimal] = React.useState(false);
 
-  const handleNumbers = () => {
-    if(n1 !== null) {
-      return 0
-    } else {
-      if(n2 !== null) {
-        return n1 + n2
-      }
-    }
-  }
   return(
     <div className="calculator-container">
       <div className="display">
-        <input type={'text'} id='display' defaultValue={'0'} />
         <p>{result}</p>
+        <div id='display'>
+          <span>{n1} {operation} {n2}</span>
+        </div>
       </div>
       <NumberPad
+        isDecimal={isDecimal}
+        setIsDecimal={setIsDecimal}
+        setOperation={setOperation}
+        setNumberEditing={setNumberEditing}
+        numberEditing={numberEditing}
         setNumbers={setNumbers} 
         setResult={setResult}
         numbers={{n1, n2}}

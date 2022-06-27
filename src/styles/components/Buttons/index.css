@@ -33,10 +33,10 @@
   background-color: rgba(202, 100, 16, 0.904);
 }
 
-.equalBtn {
+.equalBtn, .clearBtn {
   grid-column: 4 / 6;
 }
-.equalBtn button {
+.equalBtn button, .clearBtn button {
   width: 100%;
 }
 
