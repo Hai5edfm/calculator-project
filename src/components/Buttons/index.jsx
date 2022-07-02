@@ -9,8 +9,7 @@ import {
   exponent,
   factorial,
   squareRoot,
-  square,
-  cube
+  square
 } from '../../utils/operations';
 
 
@@ -20,22 +19,35 @@ export const NumberPad = ({
   isDecimal,
   setIsDecimal,
   setOperation, 
+  operation,
   numberEditing, 
   setNumberEditing, 
-  setResult}) => {
+  setResult, 
+  result
+}) => {
 
   const {n1, n2} = numbers;
 
   const handleEditing = (n) => {
     const ifNumberEditing = () => {
-      numberEditing === 'n1' 
-        ? setNumbers({...numbers, n1: n1 + n}) 
-        : setNumbers({...numbers, n2: n2 + n})
+      if(numberEditing === 'n1') {
+        // if it is decimal, it returns
+        if(n === '.' && n1.includes('.')) return;
+        if(n1 === '0') {
+          setNumbers({n1: n, n2: null});
+        } else {
+          setNumbers({...numbers, n1: n1 + n});
+        }
+      } else {
+        setNumbers({...numbers, n2: n2 + n});
+      }
     }
-    if(n === '.' && isDecimal) return;
+    // if n1 and n2 are not empty, it will add the number to the string of numbers :D
+    if(n1 != null || n2 != null) ifNumberEditing();
+    // if numberEditing is n1 and is empty, n will be the value of n1
     if(numberEditing === 'n1' && n1 == null) setNumbers({...numbers, n1: n});
+    // if numberEditing is n2 and is empty, n will be the value of n2
     if(numberEditing === 'n2' && n2 == null) setNumbers({...numbers, n2: n});
-    if(n1 != null && n2 != null) ifNumberEditing();
   }
     
   const handleOp = (op) => {
@@ -43,14 +55,58 @@ export const NumberPad = ({
     setNumberEditing('n2');
   }
 
+  const handleClear = () => {
+    setNumbers({n1: '0', n2: null});
+    setIsDecimal(false);
+    setOperation(null);
+    setNumberEditing('n1');
+  }
+  const handleDelete = () => {
+    if(numberEditing === 'n1') {
+      if(n1.length === 1) {
+        setNumbers({...numbers, n1: '0'});
+      } else {
+        setNumbers({...numbers, n1: n1.slice(0, -1)});
+      }
+    } else {
+      if(n2.length === 1) {
+        setNumbers({...numbers, n2: null});
+      } else {
+        setNumbers({...numbers, n2: n2.slice(0, -1)});
+      }
+    }
+  }
+  
+  const handleResult = () => {
+    if(n1 == null || n2 == null) return;
+    let num1 = parseFloat(numbers.n1);
+    let num2 = parseFloat(numbers.n2);
+    const getResult = () => { 
+      switch(operation) {
+        case '+': return add(num1, num2);
+        case '-': return subtract(num1, num2);
+        case '*': return multiply(num1, num2);
+        case '/': return divide(num1, num2);
+        case '%': return modulo(num1, num2);
+        case '^': return exponent(num1, num2);
+        case '!': return factorial(num1);
+        case '√': return squareRoot(num1);
+        case '²': return square(num1);
+        default: return 'error';
+      }
+    } 
+    setResult(getResult());
+    setNumbers({n1: getResult(), n2: null});
+    setIsDecimal(false);
+    setOperation(null);
+    setNumberEditing('n1');
+  }
+
   return(
     <ul className="buttonsList">
       <li>
-        <button className={"operationBtn"} children={'π'}/>
-      </li>
-      <li>
         <button
-          onClick={() => { handleOp('x!') }}
+          onClick={() => { handleOp('!') }}
           className={"operationBtn"} children={'x!'}
         />
       </li>
@@ -60,9 +116,14 @@ export const NumberPad = ({
           className={"operationBtn"} children={'√'}
         />
       </li>
+<li>
+        <button
+          className={"operationBtn"} children={'²'}
+        />
+      </li>
       <li className="clearBtn">
         <button
-          onClick={() => { setNumbers({n1: null, n2: null}); setOperation(null) }}
+          onClick={handleClear}
           className={"operationBtn"} children={'AC'}
         />
       </li>
@@ -86,13 +147,14 @@ export const NumberPad = ({
       </li>
       <li>
         <button
-          onClick={() => { handleOp('÷') }}
+          onClick={() => { handleOp('/') }}
           className={"operationBtn"} children={'÷'}
         />
       </li> 
       <li>
         <button
-          className={"operationBtn"} children={'^2'}
+          onClick={handleDelete}
+          className={"operationBtn"} children={'DEL'}
         />
       </li>
       <li>
@@ -120,7 +182,11 @@ export const NumberPad = ({
         />
       </li>
       <li>
-        <button className={"operationBtn"} children={'Ans'}/>
+        <button 
+          onClick={() => {setNumbers({n1: result, n2: null})}}
+          className={"operationBtn"} 
+          children={'Ans'}
+        />
       </li>
       <li>
         <button
@@ -142,7 +208,7 @@ export const NumberPad = ({
       </li>
       <li>
         <button
-          onClick={() => { handleOp('x') }}
+          onClick={() => { handleOp('*') }}
           className={"operationBtn"} children={'x'}
         />
       </li>
@@ -170,6 +236,7 @@ export const NumberPad = ({
       </li>
       <li className="equalBtn">
         <button
+          onClick={handleResult}
           className={"operationBtn"} children={'='}
         />
       </li>
