@@ -7,7 +7,6 @@ import {
   divide,
   modulo,
   exponent,
-  factorial,
   squareRoot,
   square
 } from '../../utils/operations';
@@ -16,8 +15,6 @@ import {
 export const NumberPad = ({
   numbers,
   setNumbers,
-  isDecimal,
-  setIsDecimal,
   setOperation, 
   operation,
   numberEditing, 
@@ -57,7 +54,6 @@ export const NumberPad = ({
 
   const handleClear = () => {
     setNumbers({n1: '0', n2: null});
-    setIsDecimal(false);
     setOperation(null);
     setNumberEditing('n1');
   }
@@ -92,12 +88,11 @@ export const NumberPad = ({
         case '!': return factorial(num1);
         case '√': return squareRoot(num1);
         case '²': return square(num1);
-        default: return 'error';
+        default: return 'Syntax error';
       }
-    } 
+    }
     setResult(getResult());
     setNumbers({n1: getResult(), n2: null});
-    setIsDecimal(false);
     setOperation(null);
     setNumberEditing('n1');
   }
@@ -106,8 +101,8 @@ export const NumberPad = ({
     <ul className="buttonsList">
       <li>
         <button
-          onClick={() => { handleOp('!') }}
-          className={"operationBtn"} children={'x!'}
+          onClick={() => { handleOp('^') }}
+          className={"operationBtn"} children={'^'}
         />
       </li>
       <li>
@@ -120,7 +115,7 @@ export const NumberPad = ({
         <button
           className={"operationBtn"} children={'²'}
         />
-      </li>
+      </li> 
       <li className="clearBtn">
         <button
           onClick={handleClear}
@@ -156,7 +151,7 @@ export const NumberPad = ({
           onClick={handleDelete}
           className={"operationBtn"} children={'DEL'}
         />
-      </li>
+      </li> 
       <li>
         <button
           onClick={() => {handleEditing('4')}}
@@ -174,18 +169,17 @@ export const NumberPad = ({
           onClick={() => {handleEditing('6')}}
           className={"numberBtn"} children={'6'}
         />
-      </li>
+      </li> 
       <li>
         <button
-          onClick={() => { handleOp('+') }}
-          className={"operationBtn"} children={'+'}
+          onClick={() => { handleOp('-') }}
+          className={"operationBtn"} children={'-'}
         />
       </li>
       <li>
-        <button 
-          onClick={() => {setNumbers({n1: result, n2: null})}}
-          className={"operationBtn"} 
-          children={'Ans'}
+        <button
+          onClick={() => {handleOp('%')}}
+          className={"operationBtn"} children={'mod'}
         />
       </li>
       <li>
@@ -208,30 +202,35 @@ export const NumberPad = ({
       </li>
       <li>
         <button
+          onClick={() => { handleOp('+') }}
+          className={"operationBtn"} children={'+'}
+        />
+      </li>
+      <li>
+        <button
           onClick={() => { handleOp('*') }}
           className={"operationBtn"} children={'x'}
         />
       </li>
       <li>
         <button
-          onClick={() => { handleOp('-') }}
-          className={"operationBtn"} children={'-'}
-        />
-      </li>
-      <li>
-        <button
           onClick={() => {
             handleEditing('.');
-            setIsDecimal(true);
           }}
           className={"operationBtn"} children={'.'}
         />
       </li>
-      
       <li>
         <button
           onClick={() => {handleEditing('0')}}
           className={"numberBtn"} children={'0'}
+        />
+      </li>
+      <li>
+        <button 
+          onClick={() => {setNumbers({n1: result, n2: null})}}
+          className={"operationBtn"} 
+          children={'Ans'}
         />
       </li>
       <li className="equalBtn">

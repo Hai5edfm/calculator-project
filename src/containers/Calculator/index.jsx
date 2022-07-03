@@ -7,7 +7,6 @@ export const Calculator = () => {
   const [numberEditing, setNumberEditing] = React.useState('n1');
   const [operation, setOperation] = React.useState(null);
   const [{n1, n2}, setNumbers] = React.useState({n1: '0', n2: null});
-  const [isDecimal, setIsDecimal] = React.useState(false);
 
   return(
     <div className="calculator-container">
@@ -18,8 +17,6 @@ export const Calculator = () => {
         </div>
       </div>
       <NumberPad
-        isDecimal={isDecimal}
-        setIsDecimal={setIsDecimal}
         setOperation={setOperation}
         operation={operation}
         setNumberEditing={setNumberEditing}
