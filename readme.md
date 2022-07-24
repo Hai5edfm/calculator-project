@@ -9,8 +9,7 @@
   <p>This aplication is built in <strong>React</strong> with <strong>CSS3</strong> and managed in <strong>Vite</strong>.</p>
 </div>
 
-<div width="800">
-<h2> Installation: </h2>
+<h3> Installation: </h3>
 
 1. Clone repository:
 ```shell
@@ -21,11 +20,6 @@ git clone https://github.com/Hai5edfm/calculator-project.git
 npm run install
 ```
 3. Run in a local deployment:
-<code> olawa </code>
 ```shell
 npm run dev
 ``` 
-
-</div>
-
-
