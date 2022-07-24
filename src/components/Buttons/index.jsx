@@ -26,6 +26,7 @@ export const NumberPad = ({
   const {n1, n2} = numbers;
 
   const handleEditing = (n) => {
+    if(numberEditing === 'n2' && (operation == '√' || operation == '²')) return;
     const ifNumberEditing = () => {
       if(numberEditing === 'n1') {
         // if it is decimal, it returns
@@ -74,7 +75,7 @@ export const NumberPad = ({
   }
   
   const handleResult = () => {
-    if(n1 == null || n2 == null) return;
+    if(n1 == null) return;
     let num1 = parseFloat(numbers.n1);
     let num2 = parseFloat(numbers.n2);
     const getResult = () => { 
@@ -96,6 +97,13 @@ export const NumberPad = ({
     setOperation(null);
     setNumberEditing('n1');
   }
+  const handleAns = () => {
+    if(numberEditing === 'n1') {
+      setNumbers({...numbers, n1: result});
+    } else {
+      setNumbers({...numbers, n2: result});
+    }
+  }
 
   return(
     <ul className="buttonsList">
@@ -111,8 +119,9 @@ export const NumberPad = ({
           className={"operationBtn"} children={'√'}
         />
       </li>
-<li>
+      <li>
         <button
+          onClick={() => { handleOp('²') }}
           className={"operationBtn"} children={'²'}
         />
       </li> 
@@ -228,7 +237,7 @@ export const NumberPad = ({
       </li>
       <li>
         <button 
-          onClick={() => {setNumbers({n1: result, n2: null})}}
+          onClick={() => {handleAns()}}
           className={"operationBtn"} 
           children={'Ans'}
         />

@@ -27,10 +27,10 @@
   background-color: #acacac;
 }
 .operationBtn {
-  background-color: rgba(223, 117, 30, 0.904);
+  background-color: rgba(213, 0, 50, 0.8);
 }
 .operationBtn:hover {
-  background-color: rgba(202, 100, 16, 0.904);
+  background-color: rgba(213, 0, 50, 1);
 }
 
 .equalBtn, .clearBtn {

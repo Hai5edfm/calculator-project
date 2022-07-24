@@ -13,7 +13,7 @@ export const Calculator = () => {
       <div className="display">
         <p>{result}</p>
         <div id='display'>
-          <span>{n1} {operation} {n2}</span>
+          <span>{operation == '√' && operation} {n1} {operation !== '√' && operation} {n2}</span>
         </div>
       </div>
       <NumberPad
