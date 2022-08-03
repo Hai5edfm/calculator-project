@@ -33,6 +33,8 @@ export const NumberPad = ({
         if(n === '.' && n1.includes('.')) return;
         if(n1 === '0') {
           setNumbers({n1: n, n2: null});
+        } else if(n1.toString() === 'NaN') {
+          setNumbers({n1: n, n2: null});
         } else {
           setNumbers({...numbers, n1: n1 + n});
         }
@@ -73,8 +75,10 @@ export const NumberPad = ({
       }
     }
   }
-  
+
   const handleResult = () => {
+    if(result == 'Syntax error') return;
+    if(result == 'NaN') return;
     if(n1 == null) return;
     let num1 = parseFloat(numbers.n1);
     let num2 = parseFloat(numbers.n2);
@@ -93,11 +97,17 @@ export const NumberPad = ({
       }
     }
     setResult(getResult());
-    setNumbers({n1: getResult(), n2: null});
+    if(getResult().toString() === 'NaN') {
+      setResult('Syntax error');
+    } else {
+      setNumbers({n1: getResult(), n2: null});
+    }
     setOperation(null);
     setNumberEditing('n1');
   }
   const handleAns = () => {
+    if(result == 'Syntax error') return;
+    if(result == 'NaN') return;
     if(numberEditing === 'n1') {
       setNumbers({...numbers, n1: result});
     } else {
