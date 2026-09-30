@@ -103,6 +103,14 @@ export const formatResult = (value, displayDecimalPlaces = 3) => {
   return Number(value.toFixed(displayDecimalPlaces)).toString();
 };
 
+export const formatExpressionOperand = (value, isEvaluatedResult, displayDecimalPlaces = 3) => {
+  if (!isEvaluatedResult) return value;
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue)
+    ? formatResult(numericValue, displayDecimalPlaces)
+    : value;
+};
+
 export const evaluationToState = (evaluation, currentState) => {
   if (!evaluation.ok) {
     return { ...currentState, result: ERROR_RESULT };

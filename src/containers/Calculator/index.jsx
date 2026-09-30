@@ -5,6 +5,7 @@ import {
   deleteOperand,
   evaluateExpression,
   evaluationToState,
+  formatExpressionOperand,
   formatResult,
   mapCalculatorKey,
 } from '../../utils/calculator';
@@ -14,6 +15,8 @@ import '../../styles/containers/Calculator/index.css';
 
 export const Calculator = ({ settings = DEFAULT_SETTINGS, active = true }) => {
   const [result, setResult] = React.useState(0);
+  const [evaluatedOperand, setEvaluatedOperand] = React.useState(false);
+  const pendingPadEvaluation = React.useRef(null);
   const [numberEditing, setNumberEditing] = React.useState('n1');
   const [operation, setOperation] = React.useState(null);
   const [{n1, n2}, setNumbers] = React.useState({n1: '0', n2: null});
@@ -51,6 +54,7 @@ export const Calculator = ({ settings = DEFAULT_SETTINGS, active = true }) => {
       if (action.type === 'input') {
         if (numberEditing === 'n2' && (operation === '√' || operation === '²')) return;
         event.preventDefault();
+        setEvaluatedOperand(false);
         setNumbers(appendInput(
           { n1, n2 },
           numberEditing,
@@ -59,10 +63,12 @@ export const Calculator = ({ settings = DEFAULT_SETTINGS, active = true }) => {
         ));
       } else if (action.type === 'operation') {
         event.preventDefault();
+        setEvaluatedOperand(false);
         setOperation(action.value);
         setNumberEditing('n2');
       } else if (action.type === 'delete') {
         event.preventDefault();
+        setEvaluatedOperand(false);
         setNumbers(deleteOperand({ n1, n2 }, numberEditing));
       } else if (action.type === 'evaluate') {
         event.preventDefault();
@@ -72,6 +78,7 @@ export const Calculator = ({ settings = DEFAULT_SETTINGS, active = true }) => {
           { numbers, operation, numberEditing, result },
         );
         setResult(nextState.result);
+        setEvaluatedOperand(nextState.operation === null && typeof nextState.result === 'number');
         setNumbers(nextState.numbers);
         setOperation(nextState.operation);
         setNumberEditing(nextState.numberEditing);
@@ -81,6 +88,32 @@ export const Calculator = ({ settings = DEFAULT_SETTINGS, active = true }) => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [active, n1, n2, numberEditing, operation, result, settings.maxInputFractionalDigits]);
+
+  const setNumbersFromPad = (nextNumbers) => {
+    const evaluatedValue = pendingPadEvaluation.current;
+    const isEvaluation = evaluatedValue !== null
+      && nextNumbers.n2 == null
+      && nextNumbers.n1 === evaluatedValue;
+    setNumbers(nextNumbers);
+    setEvaluatedOperand(isEvaluation);
+    if (!isEvaluation) pendingPadEvaluation.current = null;
+  };
+
+  const setOperationFromPad = (nextOperation) => {
+    setOperation(nextOperation);
+    if (pendingPadEvaluation.current !== null && nextOperation === null) {
+      pendingPadEvaluation.current = null;
+      return;
+    }
+    setEvaluatedOperand(false);
+  };
+
+  const setResultFromPad = (nextResult) => {
+    pendingPadEvaluation.current = typeof nextResult === 'number' && Number.isFinite(nextResult)
+      ? String(nextResult)
+      : null;
+    setResult(nextResult);
+  };
 
   return(
     <div className="calculator-layout">
@@ -102,16 +135,16 @@ export const Calculator = ({ settings = DEFAULT_SETTINGS, active = true }) => {
         <div className="display">
           <p>{formatResult(result, settings.displayDecimalPlaces)}</p>
           <div id='display'>
-            <span>{operation == '√' && operation} {n1} {operation !== '√' && operation} {n2}</span>
+            <span>{operation == '√' && operation} {formatExpressionOperand(n1, evaluatedOperand, settings.displayDecimalPlaces)} {operation !== '√' && operation} {n2}</span>
           </div>
         </div>
         <NumberPad
-          setOperation={setOperation}
+          setOperation={setOperationFromPad}
           operation={operation}
           setNumberEditing={setNumberEditing}
           numberEditing={numberEditing}
-          setNumbers={setNumbers}
-          setResult={setResult}
+          setNumbers={setNumbersFromPad}
+          setResult={setResultFromPad}
           result={result}
           settings={settings}
           numbers={{n1, n2}}

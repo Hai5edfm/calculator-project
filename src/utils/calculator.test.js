@@ -4,6 +4,7 @@ import {
   deleteOperand,
   evaluateExpression,
   evaluationToState,
+  formatExpressionOperand,
   formatResult,
   mapCalculatorKey,
   resetCalculator,
@@ -160,6 +161,37 @@ describe('calculator evaluation', () => {
     expect(formatResult(1.23456)).toBe('1.235');
   });
 
+  it('formats only the evaluated expression operand and preserves precision for chained calculations', () => {
+    const squareRoot = evaluateExpression({
+      numbers: { n1: '99', n2: null },
+      operation: '√',
+    });
+    expect(squareRoot).toEqual({ ok: true, value: Math.sqrt(99) });
+
+    const evaluatedState = evaluationToState(squareRoot, {
+      numbers: { n1: '99', n2: null },
+      operation: '√',
+      numberEditing: 'n1',
+      result: 0,
+    });
+    expect(formatResult(evaluatedState.result)).toBe('9.95');
+    expect(formatExpressionOperand(evaluatedState.numbers.n1, true)).toBe('9.95');
+    expect(evaluatedState.numbers.n1).toBe(String(Math.sqrt(99)));
+
+    const nextCalculation = evaluateExpression({
+      numbers: { n1: evaluatedState.numbers.n1, n2: '1' },
+      operation: '+',
+    });
+    expect(nextCalculation).toEqual({ ok: true, value: Math.sqrt(99) + 1 });
+  });
+
+  it('leaves manually entered and pending expression operands unchanged', () => {
+    const manuallyEnteredOperand = '1.234567';
+    const pendingExpressionOperand = '9.9498743710662';
+    expect(formatExpressionOperand(manuallyEnteredOperand, false, 2)).toBe(manuallyEnteredOperand);
+    expect(formatExpressionOperand(pendingExpressionOperand, false, 2)).toBe(pendingExpressionOperand);
+  });
+
   it('retains full precision across chained operations while formatting only the display', () => {
     const quotient = evaluateExpression({
       numbers: { n1: '2', n2: '3' },
@@ -174,7 +206,8 @@ describe('calculator evaluation', () => {
       numberEditing: 'n2',
       result: 0,
     });
-    expect(formatResult(nextState.result, 0)).toBe('1');
+    expect(nextState.numbers.n1).toBe(String(2 / 3));
+    expect(formatExpressionOperand(nextState.numbers.n1, true, 0)).toBe('1');
 
     const product = evaluateExpression({
       numbers: { n1: nextState.numbers.n1, n2: '3' },
