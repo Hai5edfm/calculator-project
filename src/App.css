@@ -74,10 +74,25 @@ button {
   cursor: pointer;
 }
 
+.mode-navigation button:hover {
+  background: #dce8eb;
+}
+
+.mode-navigation button:active {
+  background: #c7d8dd;
+}
+
 .mode-navigation button[aria-pressed='true'] {
   color: #fff;
   background: #245b6c;
-  border-color: #f1f1f1;
+}
+
+.mode-navigation button[aria-pressed='true']:hover {
+  background: #1d4c5a;
+}
+
+.mode-navigation button[aria-pressed='true']:active {
+  background: #173f4b;
 }
 
 .mode-navigation button:focus-visible {

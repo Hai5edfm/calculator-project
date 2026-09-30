@@ -41,8 +41,7 @@
 .converter__field input:focus-visible,
 .converter__field select:focus-visible,
 .converter__swap:focus-visible {
-  outline: 3px solid #f0b429;
-  outline-offset: 2px;
+  outline: 2px solid #698b95;
 }
 
 .converter__unit-controls {

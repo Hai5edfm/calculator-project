@@ -3,8 +3,20 @@ import '../../styles/components/Settings/index.css';
 
 const Settings = ({ settings, onChange }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const wrapperRef = React.useRef(null);
   const buttonRef = React.useRef(null);
   const inputLimitRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (!wrapperRef.current?.contains(event.target)) setIsOpen(false);
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [isOpen]);
 
   React.useEffect(() => {
     if (isOpen) inputLimitRef.current?.focus();
@@ -20,7 +32,7 @@ const Settings = ({ settings, onChange }) => {
   };
 
   return (
-    <div className="settings">
+    <div ref={wrapperRef} className="settings">
       <button
         ref={buttonRef}
         type="button"
