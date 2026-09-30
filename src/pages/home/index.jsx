@@ -33,7 +33,7 @@ const Home = () => {
         </button>
       </nav>
       <div className="mode-content" hidden={mode !== 'calculator'}>
-        <Calculator settings={settings} />
+        <Calculator settings={settings} active={mode === 'calculator'} />
       </div>
       <div className="mode-content" hidden={mode !== 'converter'}>
         <Converter settings={settings} />

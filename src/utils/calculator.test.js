@@ -5,8 +5,36 @@ import {
   evaluateExpression,
   evaluationToState,
   formatResult,
+  mapCalculatorKey,
   resetCalculator,
 } from './calculator';
+
+describe('calculator keyboard mapping', () => {
+  it.each(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'])('maps %s to operand input', (key) => {
+    expect(mapCalculatorKey(key)).toEqual({ type: 'input', value: key });
+  });
+
+  it.each(['+', '-', '*', '/'])('maps %s to its arithmetic operation', (key) => {
+    expect(mapCalculatorKey(key)).toEqual({ type: 'operation', value: key });
+  });
+
+  it('maps Enter to evaluation outside the keypad and native activation inside it', () => {
+    expect(mapCalculatorKey('Enter')).toEqual({ type: 'evaluate' });
+    expect(mapCalculatorKey('Enter', { insideKeypad: true })).toEqual({ type: 'activate' });
+  });
+
+  it('always maps = to evaluation, including inside the keypad', () => {
+    expect(mapCalculatorKey('=', { insideKeypad: true })).toEqual({ type: 'evaluate' });
+  });
+
+  it('maps Backspace to one-character deletion', () => {
+    expect(mapCalculatorKey('Backspace')).toEqual({ type: 'delete' });
+  });
+
+  it.each(['Escape', 'Delete', 'x', '%', '^', 'ArrowLeft'])('ignores unsupported key %s', (key) => {
+    expect(mapCalculatorKey(key)).toBeNull();
+  });
+});
 
 describe('calculator input', () => {
   it('normalizes leading decimal input for either operand and ignores extra decimals', () => {

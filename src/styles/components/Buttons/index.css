@@ -36,6 +36,14 @@
   background-color: rgba(213, 0, 50, 1);
 }
 
+.buttonsList button:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 3px solid #075985;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px #fff;
+}
+
 .equalBtn, .clearBtn {
   grid-column: 4 / 6;
 }

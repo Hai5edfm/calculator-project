@@ -11,6 +11,15 @@ import {
 
 export const ERROR_RESULT = 'Error';
 
+export const mapCalculatorKey = (key, { insideKeypad = false } = {}) => {
+  if (/^(?:\d|\.)$/.test(key)) return { type: 'input', value: key };
+  if (['+', '-', '*', '/'].includes(key)) return { type: 'operation', value: key };
+  if (key === 'Enter') return insideKeypad ? { type: 'activate' } : { type: 'evaluate' };
+  if (key === '=') return { type: 'evaluate' };
+  if (key === 'Backspace') return { type: 'delete' };
+  return null;
+};
+
 const isValidNumber = (value) =>
   typeof value === 'string' && /^-?\d+(?:\.\d*)?$/.test(value) && Number.isFinite(Number(value));
 
