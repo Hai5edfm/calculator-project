@@ -3,11 +3,14 @@
 	flex-direction: column;
 	align-items: center;
 	background-color: #BBDDE6;
-	padding: 38px;
+	max-width: calc(100vw - 24px);
+	box-sizing: border-box;
+	padding: 38px clamp(12px, 6vw, 38px);
 	border-radius: 10px;
 }
 
 .display {
+	box-sizing: border-box;
 	background-color: #f1f1f1;
 	display: flex;
 	flex-direction: column;

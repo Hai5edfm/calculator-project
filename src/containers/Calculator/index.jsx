@@ -1,5 +1,6 @@
 import React from "react";
 import { NumberPad } from "../../components/Buttons"
+import { formatResult } from '../../utils/calculator';
 import '../../styles/containers/Calculator/index.css';
 
 export const Calculator = () => {
@@ -11,7 +12,7 @@ export const Calculator = () => {
   return(
     <div className="calculator-container">
       <div className="display">
-        <p>{result}</p>
+        <p>{formatResult(result)}</p>
         <div id='display'>
           <span>{operation == '√' && operation} {n1} {operation !== '√' && operation} {n2}</span>
         </div>

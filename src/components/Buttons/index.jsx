@@ -1,15 +1,12 @@
 import React from "react";
 import '../../styles/components/Buttons/index.css';
 import {
-  add,
-  subtract,
-  multiply,
-  divide,
-  modulo,
-  exponent,
-  squareRoot,
-  square
-} from '../../utils/operations';
+  appendInput,
+  deleteOperand,
+  evaluateExpression,
+  resetCalculator,
+  evaluationToState,
+} from '../../utils/calculator';
 
 
 export const NumberPad = ({
@@ -25,95 +22,44 @@ export const NumberPad = ({
 
   const {n1, n2} = numbers;
 
-  const handleEditing = (n) => {
-    if(numberEditing === 'n2' && (operation == '√' || operation == '²')) return;
-    const ifNumberEditing = () => {
-      if(numberEditing === 'n1') {
-        // if it is decimal, it returns
-        if(n === '.' && n1.includes('.')) return;
-        if(n1 === '0') {
-          setNumbers({n1: n, n2: null});
-        } else if(n1.toString() === 'NaN') {
-          setNumbers({n1: n, n2: null});
-        } else {
-          setNumbers({...numbers, n1: n1 + n});
-        }
-      } else {
-        setNumbers({...numbers, n2: n2 + n});
-      }
-    }
-    // if n1 and n2 are not empty, it will add the number to the string of numbers :D
-    if(n1 != null || n2 != null) ifNumberEditing();
-    // if numberEditing is n1 and is empty, n will be the value of n1
-    if(numberEditing === 'n1' && n1 == null) setNumbers({...numbers, n1: n});
-    // if numberEditing is n2 and is empty, n will be the value of n2
-    if(numberEditing === 'n2' && n2 == null) setNumbers({...numbers, n2: n});
-  }
-    
+  const handleEditing = (input) => {
+    if (numberEditing === 'n2' && (operation === '√' || operation === '²')) return;
+    setNumbers(appendInput(numbers, numberEditing, input));
+  };
+
   const handleOp = (op) => {
     setOperation(op);
     setNumberEditing('n2');
-  }
+  };
 
   const handleClear = () => {
-    setNumbers({n1: '0', n2: null});
-    setOperation(null);
-    setNumberEditing('n1');
-  }
+    const reset = resetCalculator();
+    setNumbers(reset.numbers);
+    setOperation(reset.operation);
+    setNumberEditing(reset.numberEditing);
+    setResult(reset.result);
+  };
+
   const handleDelete = () => {
-    if(numberEditing === 'n1') {
-      if(n1.length === 1) {
-        setNumbers({...numbers, n1: '0'});
-      } else {
-        setNumbers({...numbers, n1: n1.slice(0, -1)});
-      }
-    } else {
-      if(n2.length === 1) {
-        setNumbers({...numbers, n2: null});
-      } else {
-        setNumbers({...numbers, n2: n2.slice(0, -1)});
-      }
-    }
-  }
+    setNumbers(deleteOperand(numbers, numberEditing));
+  };
 
   const handleResult = () => {
-    if(result == 'Syntax error') return;
-    if(result == 'NaN') return;
-    if(n1 == null) return;
-    let num1 = parseFloat(numbers.n1);
-    let num2 = parseFloat(numbers.n2);
-    const getResult = () => { 
-      switch(operation) {
-        case '+': return add(num1, num2);
-        case '-': return subtract(num1, num2);
-        case '*': return multiply(num1, num2);
-        case '/': return divide(num1, num2);
-        case '%': return modulo(num1, num2);
-        case '^': return exponent(num1, num2);
-        case '!': return factorial(num1);
-        case '√': return squareRoot(num1);
-        case '²': return square(num1);
-        default: return 'Syntax error';
-      }
-    }
-    setResult(getResult());
-    if(getResult().toString() === 'NaN') {
-      setResult('Syntax error');
-    } else {
-      setNumbers({n1: getResult(), n2: null});
-    }
-    setOperation(null);
-    setNumberEditing('n1');
-  }
+    const nextState = evaluationToState(
+      evaluateExpression({ numbers, operation }),
+      { numbers, operation, numberEditing, result },
+    );
+    setResult(nextState.result);
+    setNumbers(nextState.numbers);
+    setOperation(nextState.operation);
+    setNumberEditing(nextState.numberEditing);
+  };
+
   const handleAns = () => {
-    if(result == 'Syntax error') return;
-    if(result == 'NaN') return;
-    if(numberEditing === 'n1') {
-      setNumbers({...numbers, n1: result});
-    } else {
-      setNumbers({...numbers, n2: result});
-    }
-  }
+    if (typeof result !== 'number' || !Number.isFinite(result)) return;
+    const operand = numberEditing;
+    setNumbers({ ...numbers, [operand]: String(result) });
+  };
 
   return(
     <ul className="buttonsList">
