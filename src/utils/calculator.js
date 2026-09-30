@@ -14,11 +14,12 @@ export const ERROR_RESULT = 'Error';
 const isValidNumber = (value) =>
   typeof value === 'string' && /^-?\d+(?:\.\d*)?$/.test(value) && Number.isFinite(Number(value));
 
-export const appendInput = (numbers, operand, input) => {
+export const appendInput = (numbers, operand, input, maxInputFractionalDigits = null) => {
   if (!['n1', 'n2'].includes(operand) || !/^(?:\d|\.)$/.test(input)) return numbers;
 
   const current = numbers[operand];
   if (input === '.' && current?.includes('.')) return numbers;
+  if (input === '.' && maxInputFractionalDigits === 0) return numbers;
 
   let nextValue;
   if (current == null || current === '') {
@@ -27,6 +28,11 @@ export const appendInput = (numbers, operand, input) => {
     nextValue = input === '0' ? current : input;
   } else {
     nextValue = current + input;
+  }
+
+  if (Number.isInteger(maxInputFractionalDigits) && maxInputFractionalDigits >= 0) {
+    const fractionalDigits = nextValue.split('.')[1]?.length ?? 0;
+    if (fractionalDigits > maxInputFractionalDigits) return numbers;
   }
 
   return { ...numbers, [operand]: nextValue };
@@ -83,9 +89,9 @@ export const evaluateExpression = ({ numbers, operation }) => {
     : { ok: false, value: ERROR_RESULT };
 };
 
-export const formatResult = (value) => {
+export const formatResult = (value, displayDecimalPlaces = 3) => {
   if (typeof value !== 'number' || !Number.isFinite(value)) return value;
-  return Number(value.toFixed(3)).toString();
+  return Number(value.toFixed(displayDecimalPlaces)).toString();
 };
 
 export const evaluationToState = (evaluation, currentState) => {

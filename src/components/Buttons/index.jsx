@@ -17,14 +17,20 @@ export const NumberPad = ({
   numberEditing, 
   setNumberEditing, 
   setResult, 
-  result
+  result,
+  settings
 }) => {
 
   const {n1, n2} = numbers;
 
   const handleEditing = (input) => {
     if (numberEditing === 'n2' && (operation === '√' || operation === '²')) return;
-    setNumbers(appendInput(numbers, numberEditing, input));
+    setNumbers(appendInput(
+      numbers,
+      numberEditing,
+      input,
+      settings.maxInputFractionalDigits,
+    ));
   };
 
   const handleOp = (op) => {

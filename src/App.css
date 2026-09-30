@@ -42,10 +42,61 @@ button {
 }
 
 .home {
-  width: 100vw;
-  height: 100vh;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 16px;
+  padding: 80px 16px 24px;
   background-color: rgba(9, 31, 44);
+}
+
+.mode-navigation {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  gap: 8px;
+}
+
+.mode-navigation button {
+  border: 1px solid #102f3b;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #102f3b;
+  background: #f1f1f1;
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.mode-navigation button[aria-pressed='true'] {
+  color: #fff;
+  background: #245b6c;
+  border-color: #f1f1f1;
+}
+
+.mode-navigation button:focus-visible {
+  outline: 3px solid #f0b429;
+  outline-offset: 2px;
+}
+
+.mode-content[hidden] {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  .home {
+    padding-top: 120px;
+  }
+
+  .mode-navigation {
+    top: 68px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }

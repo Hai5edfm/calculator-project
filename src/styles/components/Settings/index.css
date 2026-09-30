@@ -1,0 +1,65 @@
+.settings {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1;
+  color: #102f3b;
+  text-align: left;
+}
+
+.settings__toggle,
+.settings__close {
+  border: 1px solid #102f3b;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #102f3b;
+  background: #f1f1f1;
+  font: inherit;
+  cursor: pointer;
+}
+
+.settings__toggle:focus-visible,
+.settings__close:focus-visible,
+.settings__field select:focus-visible {
+  outline: 3px solid #f0b429;
+  outline-offset: 2px;
+}
+
+.settings__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(320px, calc(100vw - 40px));
+  box-sizing: border-box;
+  padding: 16px;
+  border: 1px solid #8baeb8;
+  border-radius: 8px;
+  background: #f1f1f1;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 22%);
+}
+
+.settings__panel h2 {
+  margin: 0 0 14px;
+  font-size: 1.1rem;
+}
+
+.settings__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.settings__field label {
+  font-size: 0.95rem;
+}
+
+.settings__field select {
+  min-height: 38px;
+  padding: 6px 8px;
+  border: 1px solid #698b95;
+  border-radius: 5px;
+  color: #102f3b;
+  background: #fff;
+  font: inherit;
+}

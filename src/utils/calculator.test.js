@@ -24,6 +24,37 @@ describe('calculator input', () => {
     expect(numbers.n2).toBe('0.34');
   });
 
+  it.each(['n1', 'n2'])('enforces fractional limits for %s', (operand) => {
+    const start = { n1: '1', n2: '1' };
+    const enterFraction = (limit, digits) => {
+      let numbers = { ...start };
+      numbers = appendInput(numbers, operand, '.', limit);
+      for (const digit of digits) numbers = appendInput(numbers, operand, digit, limit);
+      return numbers;
+    };
+
+    expect(appendInput(start, operand, '.', 0)).toBe(start);
+    expect(enterFraction(1, '12')[operand]).toBe('1.1');
+    expect(enterFraction(12, '1234567890123')[operand]).toBe('1.123456789012');
+    expect(enterFraction(null, '1234567890123')[operand]).toBe('1.1234567890123');
+  });
+
+  it.each(['n1', 'n2'])('blocks further fractional input after lowering the limit for %s', (operand) => {
+    let numbers = { n1: '1', n2: '1' };
+    numbers = appendInput(numbers, operand, '.', null);
+    numbers = appendInput(numbers, operand, '2', null);
+    numbers = appendInput(numbers, operand, '3', null);
+    const enteredValue = numbers[operand];
+
+    expect(appendInput(numbers, operand, '4', 1)).toBe(numbers);
+    numbers = deleteOperand(numbers, operand);
+    expect(numbers[operand]).toBe(enteredValue.slice(0, -1));
+    expect(appendInput(numbers, operand, '4', 1)).toBe(numbers);
+    numbers = deleteOperand(numbers, operand);
+    numbers = appendInput(numbers, operand, '.', 1);
+    expect(appendInput(numbers, operand, '4', 1)[operand]).toBe('1.4');
+  });
+
   it('does not accept malformed decimal values during evaluation', () => {
     expect(evaluateExpression({
       numbers: { n1: '2.3.4', n2: '1' },
@@ -94,6 +125,13 @@ describe('calculator evaluation', () => {
     expect(evaluateExpression({ numbers, operation })).toEqual({ ok: true, value });
   });
 
+  it('formats with configurable maximum precision and trims trailing zeroes', () => {
+    expect(formatResult(1.678, 0)).toBe('2');
+    expect(formatResult(1.678, 2)).toBe('1.68');
+    expect(formatResult(1.2, 5)).toBe('1.2');
+    expect(formatResult(1.23456)).toBe('1.235');
+  });
+
   it('retains full precision across chained operations while formatting only the display', () => {
     const quotient = evaluateExpression({
       numbers: { n1: '2', n2: '3' },
@@ -101,10 +139,17 @@ describe('calculator evaluation', () => {
     });
     expect(quotient.ok).toBe(true);
     expect(quotient.value).toBe(2 / 3);
-    expect(formatResult(quotient.value)).toBe('0.667');
+
+    const nextState = evaluationToState(quotient, {
+      numbers: { n1: '2', n2: '3' },
+      operation: '/',
+      numberEditing: 'n2',
+      result: 0,
+    });
+    expect(formatResult(nextState.result, 0)).toBe('1');
 
     const product = evaluateExpression({
-      numbers: { n1: String(quotient.value), n2: '3' },
+      numbers: { n1: nextState.numbers.n1, n2: '3' },
       operation: '*',
     });
     expect(product).toEqual({ ok: true, value: 2 });
