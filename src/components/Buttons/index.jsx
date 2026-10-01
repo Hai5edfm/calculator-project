@@ -11,6 +11,7 @@ import {
 
 export const NumberPad = ({
   numbers,
+  onEvaluation,
   setNumbers,
   setOperation, 
   operation,
@@ -51,8 +52,10 @@ export const NumberPad = ({
   };
 
   const handleResult = () => {
+    const evaluation = evaluateExpression({ numbers, operation });
+    onEvaluation?.({ numbers, operation, evaluation });
     const nextState = evaluationToState(
-      evaluateExpression({ numbers, operation }),
+      evaluation,
       { numbers, operation, numberEditing, result },
     );
     setResult(nextState.result);

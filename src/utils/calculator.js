@@ -111,6 +111,15 @@ export const formatExpressionOperand = (value, isEvaluatedResult, displayDecimal
     : value;
 };
 
+export const retainEvaluatedOperandDisplay = (
+  isEvaluatedOperand,
+  previousNumbers,
+  nextNumbers,
+  { isReset = false } = {},
+) => Boolean(
+  !isReset && isEvaluatedOperand && previousNumbers?.n1 === nextNumbers?.n1,
+);
+
 export const evaluationToState = (evaluation, currentState) => {
   if (!evaluation.ok) {
     return { ...currentState, result: ERROR_RESULT };

@@ -8,6 +8,7 @@ import {
   formatResult,
   mapCalculatorKey,
   resetCalculator,
+  retainEvaluatedOperandDisplay,
 } from './calculator';
 
 describe('calculator keyboard mapping', () => {
@@ -105,6 +106,36 @@ describe('calculator input', () => {
       numberEditing: 'n1',
       result: 0,
     });
+  });
+});
+
+describe('computed operand display state', () => {
+  it('retains rounded display state while the first operand is unchanged', () => {
+    const computed = { n1: String(99 / 7), n2: null };
+    const operationSelected = { ...computed, n2: null };
+    const secondOperandEdited = { ...computed, n2: '3' };
+    const secondOperandDeleted = { ...computed, n2: null };
+
+    expect(retainEvaluatedOperandDisplay(true, computed, operationSelected)).toBe(true);
+    expect(retainEvaluatedOperandDisplay(true, operationSelected, secondOperandEdited)).toBe(true);
+    expect(retainEvaluatedOperandDisplay(true, secondOperandEdited, secondOperandDeleted)).toBe(true);
+    expect(formatExpressionOperand(computed.n1, true, 2)).toBe('14.14');
+    expect(computed.n1).toBe(String(99 / 7));
+    expect(evaluateExpression({
+      numbers: { n1: computed.n1, n2: '1' },
+      operation: '+',
+    })).toEqual({ ok: true, value: 99 / 7 + 1 });
+  });
+
+  it('clears rounded display state when the first operand changes or calculator resets', () => {
+    const computed = { n1: String(99 / 7), n2: '3' };
+    const editedFirstOperand = { n1: '14.1', n2: '3' };
+    const reset = { n1: '0', n2: null };
+
+    expect(retainEvaluatedOperandDisplay(true, computed, editedFirstOperand)).toBe(false);
+    expect(retainEvaluatedOperandDisplay(true, computed, reset)).toBe(false);
+    expect(retainEvaluatedOperandDisplay(true, { n1: '0' }, { n1: '0' }, { isReset: true })).toBe(false);
+    expect(retainEvaluatedOperandDisplay(false, computed, computed)).toBe(false);
   });
 });
 
