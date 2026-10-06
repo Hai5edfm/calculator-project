@@ -110,6 +110,28 @@ describe('calculator input', () => {
 });
 
 describe('computed operand display state', () => {
+  it('deletes from the rounded evaluated display without changing chained precision beforehand', () => {
+    const evaluated = evaluationToState(
+      evaluateExpression({ numbers: { n1: '8654', n2: '9' }, operation: '/' }),
+      {},
+    );
+
+    expect(formatExpressionOperand(evaluated.numbers.n1, true)).toBe('961.556');
+    expect(evaluateExpression({ numbers: { n1: evaluated.numbers.n1, n2: '1' }, operation: '+' }))
+      .toEqual({ ok: true, value: 8654 / 9 + 1 });
+    expect(deleteOperand(evaluated.numbers, 'n1', {
+      isEvaluatedOperand: true,
+      displayDecimalPlaces: 3,
+    })).toEqual({ n1: '961.55', n2: null });
+
+    expect(deleteOperand({ n1: '1.234567', n2: '987654' }, 'n1'))
+      .toEqual({ n1: '1.23456', n2: '987654' });
+    expect(deleteOperand({ n1: '1.234567', n2: '987654' }, 'n2', {
+      isEvaluatedOperand: true,
+      displayDecimalPlaces: 3,
+    })).toEqual({ n1: '1.234567', n2: '98765' });
+  });
+
   it('retains rounded display state while the first operand is unchanged', () => {
     const computed = { n1: String(99 / 7), n2: null };
     const operationSelected = { ...computed, n2: null };

@@ -19,7 +19,8 @@ export const NumberPad = ({
   setNumberEditing, 
   setResult, 
   result,
-  settings
+  settings,
+  evaluatedOperand,
 }) => {
 
   const {n1, n2} = numbers;
@@ -48,7 +49,10 @@ export const NumberPad = ({
   };
 
   const handleDelete = () => {
-    setNumbers(deleteOperand(numbers, numberEditing));
+    setNumbers(deleteOperand(numbers, numberEditing, {
+      isEvaluatedOperand: evaluatedOperand,
+      displayDecimalPlaces: settings.displayDecimalPlaces,
+    }));
   };
 
   const handleResult = () => {

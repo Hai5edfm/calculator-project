@@ -47,14 +47,20 @@ export const appendInput = (numbers, operand, input, maxInputFractionalDigits = 
   return { ...numbers, [operand]: nextValue };
 };
 
-export const deleteOperand = (numbers, operand) => {
+export const deleteOperand = (
+  numbers,
+  operand,
+  { isEvaluatedOperand = false, displayDecimalPlaces = 3 } = {},
+) => {
   if (operand === 'n2' && (numbers.n2 == null || numbers.n2 === '')) return numbers;
   if (operand === 'n1' && (numbers.n1 == null || numbers.n1 === '')) {
     return { ...numbers, n1: '0' };
   }
   if (!['n1', 'n2'].includes(operand)) return numbers;
 
-  const current = numbers[operand];
+  const current = operand === 'n1' && isEvaluatedOperand
+    ? formatExpressionOperand(numbers.n1, true, displayDecimalPlaces)
+    : numbers[operand];
   if (current.length <= 1) {
     return { ...numbers, [operand]: operand === 'n1' ? '0' : null };
   }

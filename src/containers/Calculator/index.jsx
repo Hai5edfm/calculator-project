@@ -160,7 +160,10 @@ export const Calculator = ({ settings = DEFAULT_SETTINGS, active = true }) => {
         setNumberEditing('n2');
       } else if (action.type === 'delete') {
         const currentNumbers = { n1, n2 };
-        const nextNumbers = deleteOperand(currentNumbers, numberEditing);
+        const nextNumbers = deleteOperand(currentNumbers, numberEditing, {
+          isEvaluatedOperand: evaluatedOperand,
+          displayDecimalPlaces: settings.displayDecimalPlaces,
+        });
         event.preventDefault();
         setEvaluatedOperand((current) =>
           retainEvaluatedOperandDisplay(current, currentNumbers, nextNumbers),
@@ -302,6 +305,7 @@ export const Calculator = ({ settings = DEFAULT_SETTINGS, active = true }) => {
           setResult={setResultFromPad}
           result={result}
           settings={settings}
+          evaluatedOperand={evaluatedOperand}
           numbers={{n1, n2}}
         />
       </div>
